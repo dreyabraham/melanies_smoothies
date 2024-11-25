@@ -35,7 +35,7 @@ ingredients_list = st.multiselect(
 # Display the selected ingredients and allow submission
 if ingredients_list:
     # Initialize an empty string to store selected ingredients
-    ingredients_string = ', '.join(ingredients_list)  # Create a comma-separated list of ingredients
+    ingredients_string = ' '.join(ingredients_list)  # Create a comma-separated list of ingredients
     
     # Display nutrition information for each selected fruit
     for fruit_chosen in ingredients_list:
