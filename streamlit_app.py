@@ -3,7 +3,7 @@ import streamlit as st
 from snowflake.snowpark.functions import col
 
 # App Title and Description
-st.title(":cup_with_straw  Customize Your Smoothie :cup_with_straw:")
+st.title(":cup_with_straw: Customize Your Smoothie :cup_with_straw:")
 st.write(
     """
     Choose the fruits you want in your custom smoothie!
@@ -28,22 +28,21 @@ ingredients_list = st.multiselect(
 
 # Display the selected ingredients
 if ingredients_list:
+    # Combine selected ingredients into a single string
+    ingredients_string = ', '.join(ingredients_list)  # Use comma as a separator
 
-  ingredients_string = ''
- 
-  for fruit_chosen in ingredients_list:
-      ingredients_string += fruit_chosen + ''
+    # Create the SQL insert statement
+    my_insert_stmt = f"""
+    INSERT INTO smoothies.public.orders(ingredients)
+    VALUES ('{ingredients_string}')
+    """
 
-  # st.write(ingredients_string)
+    # Button to trigger the insertion
+    time_to_insert = st.button('Submit Order')
 
-  my_insert_stmt = """ insert into smoothies.public.orders(ingredients)
-            values ('""" + ingredients_string + """')"""
-  # st.write(my_insert_stmt)
-  time_to_insert = st.button('Submit Order')
+    if time_to_insert:
+        # Execute the insert statement
+        session.sql(my_insert_stmt).collect()
 
-
-  if time_to_insert:
-     session.sql(my_insert_stmt).collect()
-   
-     st.success('Your Smoothie is ordered!', icon="✅"
-
+        # Display success message
+        st.success('Your Smoothie is ordered!', icon="✅")
