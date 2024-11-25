@@ -51,6 +51,13 @@ if ingredients_list:
      session.sql(my_insert_stmt).collect()
      st.success(f"Thank you, {name_on_order}! Your Smoothie is ordered!", icon="✅")
 
+# New section to display SmoothieFroot nutrition information
 import requests
+
+# Make a GET request to retrieve nutritional information for watermelon
 smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
-st.text(smoothiefroot_response)
+
+# Optionally, you can display the raw JSON response (commented out for now)
+# st.text(smoothiefroot_response.json())
+sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
+
