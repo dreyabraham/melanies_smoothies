@@ -45,7 +45,7 @@ if ingredients_list:
         
         # Make the API request
         try:
-            smoothiefroot_response = requests.get(f"https://www.smoothiefroot.com/api/fruit/{search_on}")
+            smoothiefroot_response = requests.get(f"https://www.smoothiefroot.com/api/fruit", params={"search": search_on})
             smoothiefroot_response.raise_for_status()  # Will raise an HTTPError for bad responses
             data = smoothiefroot_response.json()  # Extract JSON data
 
