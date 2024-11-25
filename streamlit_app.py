@@ -20,10 +20,11 @@ cnx = st.connection("snowflake")
 session = cnx.session()
 
 # Query the FRUIT_OPTIONS table and select only the FRUIT_NAME column
-my_dataframe = session.table("smoothies.public.fruit_options").select(col("FRUIT_NAME"))
+my_dataframe = session.table("smoothies.public.fruit_options").select(col("FRUIT_NAME"),col("SEARCH_ON"))
 
 # Display the fruit options as a dataframe
 st.dataframe(data=my_dataframe, use_container_width=True)
+st.stop()
 
 # Multi-select widget to choose ingredients
 ingredients_list = st.multiselect(
