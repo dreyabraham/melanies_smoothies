@@ -1,6 +1,7 @@
 # Import required package
 import streamlit as st
 from snowflake.snowpark.functions import col
+import requests
 
 # App Title and Description
 st.title(":cup_with_straw: Customize Your Smoothie :cup_with_straw:")
@@ -32,11 +33,19 @@ ingredients_list = st.multiselect(
 
 # Display the selected ingredients
 if ingredients_list:
+    # Initialize an empty string to store selected ingredients
+    ingredients_string = ''
 
-  ingredients_string = ''
- 
-  for fruit_chosen in ingredients_list:
-      ingredients_string += fruit_chosen + ''
+    # Loop through the selected fruits and construct the ingredients string
+    for fruit_chosen in ingredients_list:
+        ingredients_string += fruit_chosen + ' '
+
+        # Fetch nutrition information for the selected fruit from SmoothieFroot API
+        smoothiefroot_response = requests.get(f"https://my.smoothiefroot.com/api/fruit/{fruit_chosen.lower()}")
+        
+        # Display the API response in a Streamlit dataframe
+        st.write(f"Nutrition information for {fruit_chosen}:")
+        sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
 
   # st.write(ingredients_string)
 
@@ -50,14 +59,3 @@ if ingredients_list:
   if time_to_insert:
      session.sql(my_insert_stmt).collect()
      st.success(f"Thank you, {name_on_order}! Your Smoothie is ordered!", icon="✅")
-
-# New section to display SmoothieFroot nutrition information
-import requests
-
-# Make a GET request to retrieve nutritional information for watermelon
-smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
-
-# Optionally, you can display the raw JSON response (commented out for now)
-# st.text(smoothiefroot_response.json())
-sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
-
