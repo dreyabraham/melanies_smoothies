@@ -50,7 +50,7 @@ if ingredients_list:
         # Fetch nutrition information for the selected fruit from the SmoothieFroot API
         
         st.subheader(f"{fruit_chosen} Nutrition Information")  
-        smoothiefroot_response = requests.get ("https://my.smoothiefroot.com/api/fruit/" + search_on)
+        smoothiefroot_response = requests.get ("https://www.smoothiefroot.com/api/fruit/all" + search_on)
        
         # Display the API response in a Streamlit dataframe
         # st.write(f"Nutrition information for **{fruit_chosen}**:")
