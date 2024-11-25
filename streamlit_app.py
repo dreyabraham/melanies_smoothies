@@ -10,6 +10,9 @@ st.write(
     """
 )
 
+name_on_order = st.text_input("Name On Smoothie:")
+st.write("The name on your smoothie will be", name_on_order)
+
 # Establish Snowflake Session
 cnx = st.connection("snowflake")
 session = cnx.session()
@@ -22,27 +25,28 @@ st.dataframe(data=my_dataframe, use_container_width=True)
 
 # Multi-select widget to choose ingredients
 ingredients_list = st.multiselect(
-    'Choose up to 5 ingredients:',  # Widget label
-    my_dataframe                    # Data source for multi-select
+    'Choose up to 5 ingredients:'  # Widget label
+    ,my_dataframe     
+    ,max_selections=5 # Data source for multi-select
 )
 
 # Display the selected ingredients
 if ingredients_list:
-    # Combine selected ingredients into a single string
-    ingredients_string = ', '.join(ingredients_list)  # Use comma as a separator
 
-    # Create the SQL insert statement
-    my_insert_stmt = f"""
-    INSERT INTO smoothies.public.orders(ingredients)
-    VALUES ('{ingredients_string}')
-    """
+  ingredients_string = ''
+ 
+  for fruit_chosen in ingredients_list:
+      ingredients_string += fruit_chosen + ''
 
-    # Button to trigger the insertion
-    time_to_insert = st.button('Submit Order')
+  # st.write(ingredients_string)
 
-    if time_to_insert:
-        # Execute the insert statement
-        session.sql(my_insert_stmt).collect()
+  my_insert_stmt = """ insert into smoothies.public.orders(ingredients,name_on_order)
+            values ('""" + ingredients_string + """','""" + name_on_order + """')"""
+  # st.write(my_insert_stmt)
+  # st.stop()  
+  time_to_insert = st.button('Submit Order')
 
-        # Display success message
-        st.success('Your Smoothie is ordered!', icon="✅")
+
+  if time_to_insert:
+     session.sql(my_insert_stmt).collect()
+     st.success(f"Thank you, {name_on_order}! Your Smoothie is ordered!", icon="✅")
