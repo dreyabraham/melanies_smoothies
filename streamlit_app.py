@@ -24,8 +24,10 @@ session = cnx.session()
 my_dataframe = session.table("smoothies.public.fruit_options").select(col("FRUIT_NAME"),col("SEARCH_ON"))
 
 # Display the fruit options as a dataframe
-st.dataframe(data=my_dataframe, use_container_width=True)
-st.stop()
+# st.dataframe(data=my_dataframe, use_container_width=True)
+# st.stop()
+
+pd_df = my_dataframe.to_pandas()
 
 # Multi-select widget to choose ingredients
 ingredients_list = st.multiselect(
@@ -41,10 +43,16 @@ if ingredients_list:
 
     # Display nutrition information for each selected fruit
     for fruit_chosen in ingredients_list:
-        st.subheader(f"{fruit_chosen} Nutrition Information")
-        # Fetch nutrition information for the selected fruit from the SmoothieFroot API
-        smoothiefroot_response = requests.get(f"https://my.smoothiefroot.com/api/fruit/{fruit_chosen.lower()}")
+        
 
+        search_on=pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON'].iloc[0]
+        st.write('The search value for ', fruit_chosen,' is ', search_on, '.')
+        # Fetch nutrition information for the selected fruit from the SmoothieFroot API
+        
+        st.subheader(f"{fruit_chosen} Nutrition Information")  
+        smoothiefroot_response = requests.get(f"https://my.smoothiefroot.com/api/fruit/{fruit_chosen.lower()}")
+      
+       
         # Display the API response in a Streamlit dataframe
         st.write(f"Nutrition information for **{fruit_chosen}**:")
         sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
