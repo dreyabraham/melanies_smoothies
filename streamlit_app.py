@@ -35,8 +35,7 @@ ingredients_list = st.multiselect(
 # Display the selected ingredients and allow submission
 if ingredients_list:
     # Initialize an empty string to store selected ingredients
-    ingredients_string = ' '.join(ingredients_list)  # Concatenate fruits into a single string with spaces
-
+    ingredients_string = ' '
     # Display nutrition information for each selected fruit
     for fruit_chosen in ingredients_list:
         search_on = pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON'].iloc[0]
