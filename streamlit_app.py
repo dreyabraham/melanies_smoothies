@@ -2,7 +2,7 @@
 import streamlit as st
 from snowflake.snowpark.functions import col
 import requests
-import pandas
+import pandas as pd
 
 # App Title and Description
 st.title(":cup_with_straw: Customize Your Smoothie :cup_with_straw:")
@@ -35,7 +35,8 @@ ingredients_list = st.multiselect(
 # Display the selected ingredients and allow submission
 if ingredients_list:
     # Initialize an empty string to store selected ingredients
-    ingredients_string = ' '
+    ingredients_string = ', '.join(ingredients_list)  # Create a comma-separated list of ingredients
+    
     # Display nutrition information for each selected fruit
     for fruit_chosen in ingredients_list:
         search_on = pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON'].iloc[0]
