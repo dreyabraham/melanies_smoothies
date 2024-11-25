@@ -53,8 +53,9 @@ if ingredients_list:
         smoothiefroot_response = requests.get ("https://my.smoothiefroot.com/api/fruit/" + search_on)
        
         # Display the API response in a Streamlit dataframe
-        st.write(f"Nutrition information for **{fruit_chosen}**:")
-        sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
+        # st.write(f"Nutrition information for **{fruit_chosen}**:")
+            
+        fv_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
 
     # SQL insert statement to save the order in the database
     my_insert_stmt = f"""
