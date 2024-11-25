@@ -21,18 +21,14 @@ cnx = st.connection("snowflake")
 session = cnx.session()
 
 # Query the FRUIT_OPTIONS table and select only the FRUIT_NAME column
-my_dataframe = session.table("smoothies.public.fruit_options").select(col("FRUIT_NAME"),col("SEARCH_ON"))
-
-# Display the fruit options as a dataframe
-# st.dataframe(data=my_dataframe, use_container_width=True)
-# st.stop()
+my_dataframe = session.table("smoothies.public.fruit_options").select(col("FRUIT_NAME"), col("SEARCH_ON"))
 
 pd_df = my_dataframe.to_pandas()
 
 # Multi-select widget to choose ingredients
 ingredients_list = st.multiselect(
     'Choose up to 5 ingredients:',   # Widget label
-    my_dataframe,                    # Data source for multi-select
+    pd_df['FRUIT_NAME'].tolist(),    # Data source for multi-select
     max_selections=5                 # Limit the number of selections to 5
 )
 
@@ -43,19 +39,21 @@ if ingredients_list:
 
     # Display nutrition information for each selected fruit
     for fruit_chosen in ingredients_list:
+        search_on = pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON'].iloc[0]
         
+        st.subheader(f"{fruit_chosen} Nutrition Information")
+        
+        # Make the API request
+        try:
+            smoothiefroot_response = requests.get(f"https://www.smoothiefroot.com/api/fruit/{search_on}")
+            smoothiefroot_response.raise_for_status()  # Will raise an HTTPError for bad responses
+            data = smoothiefroot_response.json()  # Extract JSON data
 
-        search_on=pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON'].iloc[0]
-        #st.write('The search value for ', fruit_chosen,' is ', search_on, '.')
-        # Fetch nutrition information for the selected fruit from the SmoothieFroot API
-        
-        st.subheader(f"{fruit_chosen} Nutrition Information")  
-        smoothiefroot_response = requests.get ("https://www.smoothiefroot.com/api/fruit/all" + search_on)
-       
-        # Display the API response in a Streamlit dataframe
-        # st.write(f"Nutrition information for **{fruit_chosen}**:")
-            
-        fv_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
+            # Display data in a dataframe
+            st.write(f"Nutrition information for {fruit_chosen}:")
+            st.dataframe(data, use_container_width=True)
+        except requests.exceptions.RequestException as e:
+            st.error(f"Error fetching data for {fruit_chosen}: {e}")
 
     # SQL insert statement to save the order in the database
     my_insert_stmt = f"""
