@@ -39,6 +39,7 @@ if ingredients_list:
 
     # Display nutrition information for each selected fruit
     for fruit_chosen in ingredients_list:
+        st.subheader(f"{fruit_chosen} Nutrition Information")
         # Fetch nutrition information for the selected fruit from the SmoothieFroot API
         smoothiefroot_response = requests.get(f"https://my.smoothiefroot.com/api/fruit/{fruit_chosen.lower()}")
 
